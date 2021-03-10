@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convert UPCs</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css"
+    />
+    <!--
+      Written by: Robert Marriott
+      https://github.com/robertmarriott
+    -->
+  </head>
+  <body>
+    <div class="container">
+      <h3 class="my-3">Convert UPCs</h3>
+      <form id="transform-list-form">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="upcs" class="form-label">UPCs</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="upcs"
+                class="form-control"
+                cols="30"
+                rows="15"
+                placeholder="Enter your list here..."
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="upcs"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="skus" class="form-label">SKUs</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="skus"
+                class="form-control"
+                cols="30"
+                rows="15"
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="skus"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted">
+          <small>Press Ctrl + R to reset the form.</small>
+        </p>
+      </form>
+    </div>
+    <div
+      class="toast-container position-absolute p-3 top-0 end-0"
+      data-original-class="toast-container position-absolute p-3"
+    >
+      <div
+        class="toast align-items-center text-white bg-primary border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Copied to clipboard!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script>
+      $(function () {
+        function resetForm() {
+          $('#transform-list-form')[0].reset();
+        }
+
+        function copyToClipboard(target) {
+          target.select();
+          document.execCommand('copy');
+        }
+
+        function showCopyStatus() {
+          $('.toast').toast('show');
+        }
+
+        function parseText(text) {
+          var list = text.replace('\r', '').split('\n');
+
+          if (list) {
+            return list.map(function (item) {
+              return _.trim(item);
+            });
+          }
+
+          return [];
+        }
+
+        function convertUPCs(upcs) {
+          return upcs.map(function (upc) {
+            sku = upc.replace(/\D/g, '');
+
+            if (!sku.length) {
+              return '';
+            }
+
+            matches = sku.match(/([1-9]\d{12}|[1-9]\d{5,10}(?=\d{1}))/g);
+
+            if (matches && matches.length) {
+              return matches[0];
+            }
+
+            return '';
+          });
+        }
+
+        function serializeList(list) {
+          // Include an additional line break for Excel
+          return list.join('\r\n') + '\r\n';
+        }
+
+        $(document).on('keydown', function (event) {
+          // Ctrl + R
+          if (event.ctrlKey && event.which === 82) {
+            resetForm();
+          }
+        });
+
+        $('#transform-list-form').on(
+          'click',
+          '.copy-to-clipboard',
+          function (event) {
+            var targetId = event.target.getAttribute('data-target-id');
+            var target = $('#' + targetId);
+            copyToClipboard(target);
+            showCopyStatus();
+          }
+        );
+
+        $('#transform-list-form').on('input', '#upcs', function () {
+          var upcs = parseText($(this).val());
+          var skus = convertUPCs(upcs);
+          $('#skus').val(serializeList(skus));
+        });
+      });
+    </script>
+  </body>
+</html>

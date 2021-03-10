@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compare Lists</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css"
+    />
+    <!--
+      Written by: Robert Marriott
+      https://github.com/robertmarriott
+    -->
+  </head>
+  <body>
+    <div class="container">
+      <h3 class="my-3">Compare Lists</h3>
+      <form id="compare-lists-form">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="list-a" class="form-label">List (A)</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="list-a"
+                class="form-control"
+                cols="30"
+                rows="10"
+                placeholder="Enter your first list here..."
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="list-a"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="list-b" class="form-label">List (B)</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="list-b"
+                class="form-control"
+                cols="30"
+                rows="10"
+                placeholder="Enter your second list here..."
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="list-b"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="operation"
+                  id="operation-intersection"
+                  class="form-check-input"
+                  value="intersection"
+                  checked="checked"
+                />
+                <label class="form-check-label" for="operation-intersection"
+                  >In</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="operation"
+                  id="operation-difference"
+                  class="form-check-input"
+                  value="difference"
+                />
+                <label class="form-check-label" for="operation-difference"
+                  >Not In</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="operation"
+                  id="operation-union"
+                  class="form-check-input"
+                  value="union"
+                />
+                <label class="form-check-label" for="operation-union"
+                  >Combine</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input
+                  type="checkbox"
+                  id="preserve-shape"
+                  class="form-check-input"
+                  checked="checked"
+                />
+                <label class="form-check-label" for="preserve-shape"
+                  >Preserve Shape</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="results" class="form-label">Results</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="results"
+                class="form-control"
+                cols="30"
+                rows="10"
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="results"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted">
+          <small>Press Ctrl + R to reset the form.</small>
+        </p>
+      </form>
+    </div>
+    <div
+      class="toast-container position-absolute p-3 top-0 end-0"
+      data-original-class="toast-container position-absolute p-3"
+    >
+      <div
+        class="toast align-items-center text-white bg-primary border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Copied to clipboard!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script>
+      $(function () {
+        function resetForm() {
+          $('#compare-lists-form')[0].reset();
+        }
+
+        function copyToClipboard(target) {
+          target.select();
+          document.execCommand('copy');
+        }
+
+        function showCopyStatus() {
+          $('.toast').toast('show');
+        }
+
+        function parseText(text) {
+          var list = text.replace('\r', '').split('\n');
+
+          if (list) {
+            return list.map(function (item) {
+              return _.trim(item);
+            });
+          }
+
+          return [];
+        }
+
+        function compareLists(listA, listB, operation, preserveShape = false) {
+          var listC = [];
+
+          switch (operation) {
+            case 'intersection':
+              listC = _.intersection(listA, listB);
+              break;
+            case 'difference':
+              listC = _.difference(listA, listB);
+              break;
+            case 'union':
+              listC = _.union(listA, listB);
+              break;
+          }
+
+          // Remove any blank values
+          listC = _.without(listC, '');
+
+          if (!preserveShape || operation === 'union') {
+            return listC;
+          }
+
+          // Preserve the shape of List A
+          var listD = [];
+
+          for (var i = 0; i < listA.length; i++) {
+            listD.push(_.indexOf(listC, listA[i]) > -1 ? listA[i] : '');
+          }
+
+          return listD;
+        }
+
+        function serializeList(list) {
+          // Include an additional line break for Excel
+          return list.join('\r\n') + '\r\n';
+        }
+
+        $(document).on('keydown', function (event) {
+          // Ctrl + R
+          if (event.ctrlKey && event.which === 82) {
+            resetForm();
+          }
+        });
+
+        $('#compare-lists-form').on(
+          'click',
+          '.copy-to-clipboard',
+          function (event) {
+            var targetId = event.target.getAttribute('data-target-id');
+            var target = $('#' + targetId);
+            copyToClipboard(target);
+            showCopyStatus();
+          }
+        );
+
+        $('#compare-lists-form').on(
+          'input',
+          '#list-a, #list-b, input[name="operation"], #preserve-shape',
+          function () {
+            var listA = parseText($('#list-a').val());
+            var listB = parseText($('#list-b').val());
+            var operation = $('input[name="operation"]:checked').val();
+            var preserveShape = $('#preserve-shape').is(':checked');
+            var results = serializeList(
+              compareLists(listA, listB, operation, preserveShape)
+            );
+            $('#results').val(results);
+          }
+        );
+      });
+    </script>
+  </body>
+</html>

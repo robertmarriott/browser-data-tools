@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transform List</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css"
+    />
+    <!--
+      Written by: Robert Marriott
+      https://github.com/robertmarriott
+    -->
+  </head>
+  <body>
+    <div class="container">
+      <h3 class="my-3">Transform List</h3>
+      <form id="transform-list-form">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="list" class="form-label">Source List</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="list"
+                class="form-control"
+                cols="30"
+                rows="15"
+                placeholder="Enter your list here..."
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="list"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="results" class="form-label">Results</label>
+            <div class="input-group mb-3">
+              <textarea
+                id="results"
+                class="form-control"
+                cols="30"
+                rows="15"
+              ></textarea>
+              <button
+                type="button"
+                class="btn copy-to-clipboard"
+                data-target-id="results"
+              >
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="quote"
+                  id="quote-single"
+                  class="form-check-input"
+                  value="'"
+                  checked="checked"
+                />
+                <label class="form-check-label" for="quote-single"
+                  >'Single'</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="quote"
+                  id="quote-double"
+                  class="form-check-input"
+                  value='"'
+                />
+                <label class="form-check-label" for="quote-double"
+                  >"Double"</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="quote"
+                  id="quote-none"
+                  class="form-check-input"
+                  value=""
+                />
+                <label class="form-check-label" for="quote-none">None</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="separator"
+                  id="separator-comma"
+                  class="form-check-input"
+                  value=","
+                  checked="checked"
+                />
+                <label class="form-check-label" for="separator-comma"
+                  >Comma</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="separator"
+                  id="separator-tab"
+                  class="form-check-input"
+                  value="&#09;"
+                />
+                <label class="form-check-label" for="separator-tab">Tab</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="separator"
+                  id="separator-new-line"
+                  class="form-check-input"
+                  value="&#13;&#10;"
+                />
+                <label class="form-check-label" for="separator-new-line"
+                  >New Line</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input
+                  type="checkbox"
+                  id="skip-duplicates"
+                  class="form-check-input"
+                  checked="checked"
+                />
+                <label class="form-check-label" for="skip-duplicates"
+                  >Skip Duplicates</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input
+                  type="checkbox"
+                  id="skip-blank-lines"
+                  class="form-check-input"
+                  checked="checked"
+                />
+                <label class="form-check-label" for="skip-blank-lines"
+                  >Skip Blank Lines</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted">
+          <small>Press Ctrl + R to reset the form.</small>
+        </p>
+      </form>
+    </div>
+    <div
+      class="toast-container position-absolute p-3 top-0 end-0"
+      data-original-class="toast-container position-absolute p-3"
+    >
+      <div
+        class="toast align-items-center text-white bg-primary border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Copied to clipboard!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script>
+      $(function () {
+        function resetForm() {
+          $('#transform-list-form')[0].reset();
+        }
+
+        function copyToClipboard(target) {
+          target.select();
+          document.execCommand('copy');
+        }
+
+        function showCopyStatus() {
+          $('.toast').toast('show');
+        }
+
+        function parseText(text) {
+          var list = text.replace('\r', '').split('\n');
+
+          if (list) {
+            return list.map(function (item) {
+              return _.trim(item);
+            });
+          }
+
+          return [];
+        }
+
+        function transformList(list, quote, skipDuplicates, skipBlankLines) {
+          var filteredList = skipDuplicates ? _.uniq(list) : _.clone(list);
+
+          if (skipBlankLines) {
+            filteredList = _.without(filteredList, '');
+          }
+
+          if (quote === '') {
+            return filteredList;
+          }
+
+          return filteredList.map(function (item) {
+            return quote + _.trim(item) + quote;
+          });
+        }
+
+        function serializeList(list, separator) {
+          return list.join(separator);
+        }
+
+        $(document).on('keydown', function (event) {
+          // Ctrl + R
+          if (event.ctrlKey && event.which === 82) {
+            resetForm();
+          }
+        });
+
+        $('#transform-list-form').on(
+          'click',
+          '.copy-to-clipboard',
+          function (event) {
+            var targetId = event.target.getAttribute('data-target-id');
+            var target = $('#' + targetId);
+            copyToClipboard(target);
+            showCopyStatus();
+          }
+        );
+
+        $('#transform-list-form').on(
+          'input',
+          '#list, input[name="quote"], input[name="separator"], #skip-duplicates, #skip-blank-lines',
+          function () {
+            var list = parseText($('#list').val());
+            var quote = $('input[name="quote"]:checked').val();
+            var separator = $('input[name="separator"]:checked').val();
+            var skipDuplicates = $('#skip-duplicates').is(':checked');
+            var skipBlankLines = $('#skip-blank-lines').is(':checked');
+            var results = serializeList(
+              transformList(list, quote, skipDuplicates, skipBlankLines),
+              separator
+            );
+            $('#results').val(results);
+          }
+        );
+      });
+    </script>
+  </body>
+</html>
