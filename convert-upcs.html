@@ -146,8 +146,7 @@
         }
 
         function serializeList(list) {
-          // Include an additional line break for Excel
-          return list.join('\r\n') + '\r\n';
+          return list.join('\r\n');
         }
 
         $(document).on('keydown', function (event) {
